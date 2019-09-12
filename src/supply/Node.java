@@ -1,4 +1,8 @@
 package supply;
+/**
+*
+*@author drose
+*/
 
 public class Node<T> {
 
