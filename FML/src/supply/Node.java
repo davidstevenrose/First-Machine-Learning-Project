@@ -35,30 +35,44 @@ public class Node<T> {
         this.data = data;
     }    
     public void printPreOrder(){
-        if(this==null){
-            return;
-        }else{
-            System.out.println(data.toString());
+        System.out.println(data.toString());
+        if(left!=null){
             left.printPreOrder();
-            right.printPostOrder();
+        }        
+        if(right!=null){
+            right.printPreOrder();
         }
     }
     public void printPostOrder(){
-        if(this==null){
-            return;
-        }else{            
-            left.printPreOrder();
+        if(left!=null){
+            left.printPostOrder();
+        }        
+        if(right!=null){
             right.printPostOrder();
-            System.out.println(data.toString());
         }
+        System.out.println(data.toString());
     }
     public void printInOrder(){
-        if(this==null){
-            return;
-        }else{            
-            left.printPreOrder();
-            System.out.println(data.toString());
-            right.printPostOrder();
+        if(left!=null){
+            left.printInOrder();
+        }
+        System.out.println(data.toString());
+        if(right!=null){
+            right.printInOrder();
         }
     }
+    public String print(){
+        return this.print("",true,"");
+    }
+    public String print(String prefix, boolean isTail, String sb){
+        if(right!=null){
+            right.print(prefix + (isTail?"|   ":"    "),false,sb);            
+        }
+        System.out.println(prefix + (isTail?"\\-- ":"/-- ")+data);
+        if(left!=null){
+            left.print(prefix + (isTail?"    ":"|   "),true,sb);            
+        }
+        return sb;
+    }
+    
 }
