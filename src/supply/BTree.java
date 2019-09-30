@@ -12,21 +12,23 @@ public class BTree<T> {
     root = null;
   }
 
-  public BTree(Node n) {
+  public BTree(Node<T> n) {
     root = n;
   }
 
-  public boolean search(T data) {
-    if (root == null) {
-      return false;
-    }
-    if (root.getData().equals(data)) {
-      return true;
-    }
-    BTree l = new BTree(root.getLeft());
-    BTree r = new BTree(root.getRight());
-    return (l.search(data) || r.search(data));
-  }
+// --Commented out by Inspection START (9/30/2019 1:21 PM):
+//  private boolean search(T data) {
+//    if (root == null) {
+//      return false;
+//    }
+//    if (root.getData().equals(data)) {
+//      return true;
+//    }
+//    BTree<T> l = new BTree<>(root.getLeft());
+//    BTree<T> r = new BTree<>(root.getRight());
+//    return (l.search(data) || r.search(data));
+//  }
+// --Commented out by Inspection STOP (9/30/2019 1:21 PM)
 
   public void printInOrder() {
     root.printInOrder();
@@ -40,7 +42,7 @@ public class BTree<T> {
     root.printPostOrder();
   }
 
-  public Node getRoot() {
+  public Node<T> getRoot() {
     return root;
   }
 
@@ -48,7 +50,7 @@ public class BTree<T> {
     root = n;
   }
 
-  public boolean isEmpty() {
+  private boolean isEmpty() {
     return (root == null);
   }
 
@@ -66,15 +68,33 @@ public class BTree<T> {
     return c;
   }
 
-  public void print() {
-    root.print();
-  }
+// --Commented out by Inspection START (9/30/2019 1:21 PM):
+//  public void print() {
+//    root.print();
+//  }
+// --Commented out by Inspection STOP (9/30/2019 1:21 PM)
 
-  public Node getCurrent() {
+  /**
+   * Gets the node in the current node field of BTree. This is not initialized in the constructor,
+   * nor does the constructor set the current node to the root. to get the root, use the getRoot()
+   * method.   *
+   *
+   * @return the current node.
+   * @deprecated the BTree object should only have an instance reference to the root.
+   */
+  public Node<T> getCurrent() {
     return currentNode;
   }
 
-  public void setCurrent(Node n) {
+  /**
+   * Sets the node in the current node field of BTree. This is not initialized in the constructor,
+   * nor does the constructor set the current node to the root. to get the root, use the getRoot()
+   * method.
+   *
+   * @param n some current node.
+   * @deprecated the BTree object should only have an instance reference to the root.
+   */
+  public void setCurrent(Node<T> n) {
     currentNode = n;
   }
 }

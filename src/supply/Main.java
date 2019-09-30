@@ -1,82 +1,115 @@
 package supply;
 
+import java.util.Scanner;
+
 /**
-*
-*@author drose
-* 
-* <p>This is the driver class to test the Node class and its instances.</p>
-*/
+ * <p>This is the driver class to test the Node class and its instances.</p>
+ *
+ * @author drose
+ */
 
 public class Main {
 
-    /**
-     * A method that uses recursion to raise a to the power of b.
-     * @param b the base
-     * @param p the power
-     * @return b^p
-     */
-    public static int power(int b, int p){
-        if(p==0){
-            return 1;
-        }
-        return b * power(b, p-1);
-    };
-    /**
-     * Finds the factorial
-     * @param i number greater than 0
-     * @return i*(i-1)!
-     */
-    public static int factorial(int i){
-        if(i==0){
-            return 1;
-        }
-        return i * factorial(i-1);
-    }    
-    /**
-     * @deprecated 
-     * @param f a number greater than 0
-     * @return the f'th number in the fib sequence.
-     */
-    public static int fib(int f){
-        if(f==0 || f==1){
-            return 1;
-        }
-        return fib(f-1)+fib(f-2);
-    }
+  /**
+   * The give up message string.
+   */
+  private static final String GIVE_UP = "I give up. You win!";
 
-    public static void main(String[] args){
-        Node root = new Node(1);
-        Node n2 = new Node(2);
-        Node n3 = new Node(3);
-        Node n4 = new Node(4);
-        Node n5 = new Node(5);
-        Node n6 = new Node(6);
-        Node n7 = new Node(7);
-        BTree tree = new BTree(root);
-        
-        root.setLeft(n2);
-        root.setRight(n3);
-        n2.setLeft(n4);
-        n2.setRight(n5);
-        n5.setLeft(n7);
-        n3.setRight(n6);        
+  /**
+   * main method.
+   *
+   * @param args not used
+   */
+  public static void main(String[] args) {
+    //Beginning of Yes/No game
+    //initialize tree
+    Node<String> n1 = new Node<>("Is your animal a mammal?");
+    BTree gameTree = new BTree(n1);
+    n1.setLeft(new Node<>(GIVE_UP));
+    n1.setRight(new Node<>("Does your animal bark?"));
+    Node<String> n2 = n1.getRight();
+    n2.setLeft(new Node<>(GIVE_UP));
+    n2.setRight(new Node<>("A dog. I win!"));
+    Node current;
+    //end initialize
+    //set flags
+    boolean endResult;
+    boolean running = true;
+    //input
+    Scanner sc = new Scanner(System.in);
+    String input;
 
-        root.printInOrder();
-        System.out.println();
-        root.printPreOrder();
-        System.out.println();      
-        root.printPostOrder();
-        
-        System.out.println();
-        root.print();
-        System.out.println(tree.countNodes());        
-        /*Node<Integer> root = new Node(1);
-        Node current = root;
-        current.setLeft(new Node(2));
-        current.setRight(new Node(3));
-        current = current.getRight();
-        current.setRight(new Node(6));
-        current = root.getLeft();
-        current.setLeft(current);*/
+    //Start of game
+    System.out.println("Think of an animal, and this program will try to guess it.");
+    System.out.println("Type 'y' or 'n' for yes and no");
+    while (running) {
+      current = gameTree.getRoot();
+      endResult = false;
+      while (!endResult) {
+        System.out.println((String) current.getData());
+        input = sc.next();
+        if (input.equals("y")) {
+          current = current.getRight();
+        } else if (input.equals("n")) {
+          current = current.getLeft();
+        } else {
+          System.out.println("Input not recognized. Use 'y' or 'n' only.");
+          continue;
+        }
+        String data = (String) current.getData();
+        if (data.charAt(data.length() - 1) == '!') {
+          endResult = true;
+        }
+      }
+      System.out.println((String) current.getData());
+      //if the game lost the round
+      if (current.getData().equals(GIVE_UP)) {
+        boolean verified = false;
+        do {
+          System.out.println("Tell me, what was your animal, and what question would"
+              + " you ask to distinct it from the last question?");
+          System.out.println("Enter your input in the form [animal] [question] with "
+              + "a space in between.");
+          try {
+            String a = sc.next();
+            String q = sc.nextLine();
+            StringBuilder aw = new StringBuilder(a);
+            if (a.charAt(a.length() - 1) != '.') {
+              aw.append('.');
+            }
+            aw.append(" I win!");
+            StringBuilder qw = new StringBuilder(q);
+            if (q.charAt(q.length() - 1) != '?') {
+              qw.append('?');
+            }
+            //make sure to trim this string.
+            current.setData(qw.toString().trim());
+            Node<String> nodeYes = new Node<>(aw.toString());
+            current.setRight(nodeYes);
+            current.setLeft(new Node<>(GIVE_UP));
+            System.out.println("Thank you. Animal noticed.");
+            verified = true;
+          } catch (Exception e) {
+            System.out.println("Input was in bad format. Please try again.");
+          }
+        } while (!verified);
+      }
+      //ask if the user wants to play again.
+      boolean recognized = false;
+      do {
+        System.out.println("Do you want to play again? ('y' or 'n')");
+        input = sc.next();
+        if (input.equals("n")) {
+          running = false;
+          recognized = true;
+        } else if (input.equals("y")) {
+          recognized = true;
+        } else {
+          System.out.println("Input was invalid. Please try again.");
+        }
+      } while (!recognized);
     }
+    //end of game
+    System.out.println("Game Over");
+  }
 }
