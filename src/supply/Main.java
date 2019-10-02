@@ -16,7 +16,7 @@ public class Main {
   private static final String GIVE_UP = "I give up. You win!";
 
   /**
-   * main method.
+   * main method. Yes/No game.
    *
    * @param args not used
    */
@@ -24,13 +24,13 @@ public class Main {
     //Beginning of Yes/No game
     //initialize tree
     Node<String> n1 = new Node<>("Is your animal a mammal?");
-    BTree gameTree = new BTree(n1);
+    BTree<String> gameTree = new BTree<>(n1);
     n1.setLeft(new Node<>(GIVE_UP));
     n1.setRight(new Node<>("Does your animal bark?"));
     Node<String> n2 = n1.getRight();
     n2.setLeft(new Node<>(GIVE_UP));
     n2.setRight(new Node<>("A dog. I win!"));
-    Node current;
+    Node<String> current;
     //end initialize
     //set flags
     boolean endResult;
@@ -46,7 +46,7 @@ public class Main {
       current = gameTree.getRoot();
       endResult = false;
       while (!endResult) {
-        System.out.println((String) current.getData());
+        System.out.println(current.getData());
         input = sc.next();
         if (input.equals("y")) {
           current = current.getRight();
@@ -56,12 +56,12 @@ public class Main {
           System.out.println("Input not recognized. Use 'y' or 'n' only.");
           continue;
         }
-        String data = (String) current.getData();
+        String data = current.getData();
         if (data.charAt(data.length() - 1) == '!') {
           endResult = true;
         }
       }
-      System.out.println((String) current.getData());
+      System.out.println(current.getData());
       //if the game lost the round
       if (current.getData().equals(GIVE_UP)) {
         boolean verified = false;

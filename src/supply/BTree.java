@@ -1,59 +1,107 @@
 package supply;
 
 /**
+ * <p>A binary tree that contains a Node object. Stores the root for the tree.</p>
+ *
  * @author dsrose3626
  */
 public class BTree<T> {
 
+  /**
+   * The root of the tree.
+   */
   private Node<T> root;
+
+  /**
+   * A reference to some node in the BTree object.
+   *
+   * @deprecated field is module dependent.
+   */
   private Node<T> currentNode;
 
+  /**
+   * Create a BTree with an empty tree.
+   */
   public BTree() {
     root = null;
   }
 
+  /**
+   * Create a BTree with a given root.
+   *
+   * @param n the given root that is a Node object.
+   */
   public BTree(Node<T> n) {
     root = n;
   }
 
-// --Commented out by Inspection START (9/30/2019 1:21 PM):
-//  private boolean search(T data) {
-//    if (root == null) {
-//      return false;
-//    }
-//    if (root.getData().equals(data)) {
-//      return true;
-//    }
-//    BTree<T> l = new BTree<>(root.getLeft());
-//    BTree<T> r = new BTree<>(root.getRight());
-//    return (l.search(data) || r.search(data));
-//  }
-// --Commented out by Inspection STOP (9/30/2019 1:21 PM)
+  // --Commented out by Inspection START (9/30/2019 1:21 PM):
+  //  private boolean search(T data) {
+  //    if (root == null) {
+  //      return false;
+  //    }
+  //    if (root.getData().equals(data)) {
+  //      return true;
+  //    }
+  //    BTree<T> l = new BTree<>(root.getLeft());
+  //    BTree<T> r = new BTree<>(root.getRight());
+  //    return (l.search(data) || r.search(data));
+  //  }
+  // --Commented out by Inspection STOP (9/30/2019 1:21 PM)
 
+  /**
+   * Prints the contents of the tree in order.
+   */
   public void printInOrder() {
     root.printInOrder();
   }
 
+  /**
+   * Prints the contents of the tree in pre-order.
+   */
   public void printPreOrder() {
     root.printPreOrder();
   }
 
+  /**
+   * Prints the contents of the tree in post-order.
+   */
   public void printPostOrder() {
     root.printPostOrder();
   }
 
+  /**
+   * Gets the root of the binary tree.
+   *
+   * @return the root
+   */
   public Node<T> getRoot() {
     return root;
   }
 
-  public void setRoot(Node n) {
+  /**
+   * Set the root of the binary tree to some other Node object.
+   *
+   * @param n the new root of the tree
+   */
+  public void setRoot(Node<T> n) {
     root = n;
   }
 
+  /**
+   * Checks is the tree is empty.
+   *
+   * @return True if the tree is empty; false otherwise.
+   */
   private boolean isEmpty() {
     return (root == null);
   }
 
+  /**
+   * Returns the amount of nodes in the BTree object.
+   *
+   * @return the size of the BTree
+   */
   public int countNodes() {
     int c = 0;
     if (isEmpty()) {
@@ -62,17 +110,17 @@ public class BTree<T> {
     if (root.getLeft() == null && root.getRight() == null) {
       return 1;
     }
-    c += (new BTree(root.getLeft()).countNodes());
+    c += (new BTree<>(root.getLeft()).countNodes());
     c += 1;
-    c += (new BTree(root.getRight()).countNodes());
+    c += (new BTree<>(root.getRight()).countNodes());
     return c;
   }
 
-// --Commented out by Inspection START (9/30/2019 1:21 PM):
-//  public void print() {
-//    root.print();
-//  }
-// --Commented out by Inspection STOP (9/30/2019 1:21 PM)
+  // --Commented out by Inspection START (9/30/2019 1:21 PM):
+  //  public void print() {
+  //    root.print();
+  //  }
+  // --Commented out by Inspection STOP (9/30/2019 1:21 PM)
 
   /**
    * Gets the node in the current node field of BTree. This is not initialized in the constructor,
