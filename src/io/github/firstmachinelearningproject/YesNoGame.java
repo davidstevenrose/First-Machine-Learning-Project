@@ -1,14 +1,13 @@
-package supply;
+package io.github.firstmachinelearningproject;
 
+import io.github.genericbinarytree.BTree;
+import io.github.genericbinarytree.Node;
 import java.util.Scanner;
 
 /**
- * <p>This is the driver class to test the Node class and its instances.</p>
- *
- * @author drose
+ * The class that contains the code for the Yes/No game.
  */
-
-public class Main {
+public class YesNoGame {
 
   /**
    * The give up message string.
@@ -16,11 +15,11 @@ public class Main {
   private static final String GIVE_UP = "I give up. You win!";
 
   /**
-   * main method. Yes/No game.
-   *
-   * @param args not used
+   * First version of decision tree making. Machine learns as it plays. No information entropy.
+   * @param sc scanner class object
+   * @return "game over" when game finishes
    */
-  public static void main(String[] args) {
+  public static String playGame(Scanner sc) {
     //Beginning of Yes/No game
     //initialize tree
     Node<String> n1 = new Node<>("Is your animal a mammal?");
@@ -36,7 +35,6 @@ public class Main {
     boolean endResult;
     boolean running = true;
     //input
-    Scanner sc = new Scanner(System.in);
     String input;
 
     //Start of game
@@ -110,6 +108,6 @@ public class Main {
       } while (!recognized);
     }
     //end of game
-    System.out.println("Game Over");
+    return "Game Over";
   }
 }

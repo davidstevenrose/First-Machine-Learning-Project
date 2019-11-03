@@ -1,12 +1,13 @@
-package supply;
+package io.github.genericbinarytree;
 
 /**
- * <p>A single generic binary node for use in a tree graph.</p>
+ * <p>A single generic binary node for use in a tree graph.
+ * The node should be wrapped in a BTree object of the same data type.</p>
  *
  * @author drose
  */
 
-public class Node<T> {
+public final class Node<T> {
 
   /**
    * The child node to the left.
@@ -89,7 +90,7 @@ public class Node<T> {
   /**
    * Prints the contents of the node and its children in pre-order.
    */
-  public void printPreOrder() {
+  void printPreOrder() {
     System.out.println(data.toString());
     if (left != null) {
       left.printPreOrder();
@@ -102,7 +103,7 @@ public class Node<T> {
   /**
    * Prints the contents of the node and its children in post-order.
    */
-  public void printPostOrder() {
+  void printPostOrder() {
     if (left != null) {
       left.printPostOrder();
     }
@@ -115,7 +116,7 @@ public class Node<T> {
   /**
    * Prints the contents of the node and its children in order.
    */
-  public void printInOrder() {
+  void printInOrder() {
     if (left != null) {
       left.printInOrder();
     }
@@ -128,17 +129,17 @@ public class Node<T> {
   /**
    * Prints a graphical representation of the node and its children as a tree into the output.
    */
-  public void print() {
-    this.print_p("", true, "");
+  void print() {
+    this.print_p("", true);
   }
 
-  private void print_p(String prefix, boolean isTail, String sb) {
+  private void print_p(String prefix, boolean isTail) {
     if (right != null) {
-      right.print_p(prefix + (isTail ? "|   " : "    "), false, sb);
+      right.print_p(prefix + (isTail ? "|   " : "    "), false);
     }
     System.out.println(prefix + (isTail ? "\\-- " : "/-- ") + data);
     if (left != null) {
-      left.print_p(prefix + (isTail ? "    " : "|   "), true, sb);
+      left.print_p(prefix + (isTail ? "    " : "|   "), true);
     }
   }
 }

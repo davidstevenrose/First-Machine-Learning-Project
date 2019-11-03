@@ -1,10 +1,11 @@
-package supply;
+package io.github.genericbinarytree;
 
 /**
  * <p>A binary tree that contains a Node object. Stores the root for the tree.</p>
  *
  * @author dsrose3626
  */
+@SuppressWarnings("ALL")
 public class BTree<T> {
 
   /**
@@ -35,19 +36,24 @@ public class BTree<T> {
     root = n;
   }
 
-  // --Commented out by Inspection START (9/30/2019 1:21 PM):
-  //  private boolean search(T data) {
-  //    if (root == null) {
-  //      return false;
-  //    }
-  //    if (root.getData().equals(data)) {
-  //      return true;
-  //    }
-  //    BTree<T> l = new BTree<>(root.getLeft());
-  //    BTree<T> r = new BTree<>(root.getRight());
-  //    return (l.search(data) || r.search(data));
-  //  }
-  // --Commented out by Inspection STOP (9/30/2019 1:21 PM)
+  /**
+   * Searches the tree for the passed data. Uses the equals() method from class Object for
+   * comparing.
+   *
+   * @param data the data to search
+   * @return true if the tree contains the data, otherwise false.
+   */
+  public boolean search(T data) {
+    if (root == null) {
+      return false;
+    }
+    if (root.getData().equals(data)) {
+      return true;
+    }
+    BTree<T> l = new BTree<>(root.getLeft());
+    BTree<T> r = new BTree<>(root.getRight());
+    return (l.search(data) || r.search(data));
+  }
 
   /**
    * Prints the contents of the tree in order.
@@ -93,7 +99,7 @@ public class BTree<T> {
    *
    * @return True if the tree is empty; false otherwise.
    */
-  private boolean isEmpty() {
+  public boolean isEmpty() {
     return (root == null);
   }
 
@@ -116,11 +122,12 @@ public class BTree<T> {
     return c;
   }
 
-  // --Commented out by Inspection START (9/30/2019 1:21 PM):
-  //  public void print() {
-  //    root.print();
-  //  }
-  // --Commented out by Inspection STOP (9/30/2019 1:21 PM)
+  /**
+   * Prints the tree as a graph.
+   */
+  public void print() {
+    root.print();
+  }
 
   /**
    * Gets the node in the current node field of BTree. This is not initialized in the constructor,
