@@ -2,10 +2,14 @@ package io.github.firstmachinelearningproject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Scanner;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Utility class to create a decision tree based of provided data for the machine to learn.
@@ -30,11 +34,10 @@ public final class DecisionTreeGenerator {
    * @return a reference to the root of the generated decision tree
    */
   private static StringNode makeDecisionTreeRoot(String[][] learningTable) {
+    int ynPos = learningTable[0].length - 1;
     HashMap<String, Float> attributeIG = new HashMap<>();
     ArrayList<String> yesno = new ArrayList<>();
-    for (int i = 1; i < learningTable.length; i++) {
-      yesno.add(learningTable[i][learningTable[0].length - 1]);
-    }
+    Arrays.stream(learningTable).skip(1).forEach(line -> yesno.add(line[ynPos]));
     float ynEntropy = calcEntropy(yesno);
     //if the y/n entropy is zero, then the path will end
     if (ynEntropy == 0) {
@@ -42,20 +45,20 @@ public final class DecisionTreeGenerator {
       return new StringNode(result, NodeType.LEAFNODE);
     }
     //otherwise:
-    for (int att = 0; att < learningTable[0].length - 1; att++) {
+    for (int att = 0; att < ynPos; att++) {
       HashMap<String, Integer> partitions = new HashMap<>();
       HashMap<String, Integer> probs = new HashMap<>();
       for (int row = 1; row < learningTable.length; row++) {
         if (!partitions.containsKey(learningTable[row][att])) {
           partitions.put(learningTable[row][att], 1);
-          if (learningTable[row][learningTable[0].length - 1].equals("Yes")) {
+          if (learningTable[row][ynPos].equals("Yes")) {
             probs.put(learningTable[row][att], 1);
           } else {
             probs.put(learningTable[row][att], 0);
           }
         } else {
           partitions.put(learningTable[row][att], partitions.get(learningTable[row][att]) + 1);
-          if (learningTable[row][learningTable[0].length - 1].equals("Yes")) {
+          if (learningTable[row][ynPos].equals("Yes")) {
             probs.put(learningTable[row][att], probs.get(learningTable[row][att]) + 1);
           }
         }
@@ -66,30 +69,16 @@ public final class DecisionTreeGenerator {
           calcGain(ynEntropy, Arrays.asList(partitions.values().toArray(in1)),
               Arrays.asList(probs.values().toArray(in2))));
     }
+
     //attributeIG is filled, choose greatest value
-    String[] attributes = new String[attributeIG.keySet().size()];
-    attributeIG.keySet().toArray(attributes);
-    Float[] temp = new Float[attributeIG.values().size()];
-    attributeIG.values().toArray(temp);
-    List<Float> ig = Arrays.asList(temp);
-    String nodeAttribute = attributes[0];
-    float greatest = ig.get(0);
-    for (int i = 1; i < ig.size(); i++) {
-      if (ig.get(i) > greatest) {
-        greatest = ig.get(i);
-        nodeAttribute = attributes[i];
-      }
-    }
+    Optional<Entry<String, Float>> maxEntry = attributeIG.entrySet().stream()
+        .max(Comparator.comparing(Entry::getValue));
+    String nodeAttribute = maxEntry.get().getKey();
     //set greatest value to a string root
     StringNode root = new StringNode(nodeAttribute, NodeType.BRANCH);
     //partition learning table and build tree
-    int indexOfAtt = 0;
-    for (int i = 0; i < learningTable[0].length - 1; i++) {
-      if (nodeAttribute.equals(learningTable[0][i])) {
-        indexOfAtt = i;
-        break;
-      }
-    }
+    int indexOfAtt = IntStream.range(0,ynPos).filter(i -> nodeAttribute.equals(learningTable[0][i]))
+        .boxed().collect(Collectors.toList()).get(0);
     HashMap<String, Integer> valuePartitions = new HashMap<>();
     for (int row = 1; row < learningTable.length; row++) {
       if (!valuePartitions.containsKey(learningTable[row][indexOfAtt])) {
@@ -101,7 +90,7 @@ public final class DecisionTreeGenerator {
     }
     //the root node's children
     for (Entry<String, Integer> pair : valuePartitions.entrySet()) {
-      String[][] newTable = new String[pair.getValue() + 1][learningTable[0].length - 1];
+      String[][] newTable = new String[pair.getValue() + 1][ynPos];
       //everything to left of att
       for (int i = 0; i < indexOfAtt; i++) {
         //metadata
@@ -151,11 +140,7 @@ public final class DecisionTreeGenerator {
     String[] values = new String[current.children.size()];
     current.children.keySet().toArray(values);
     System.out.println("What is the observation for " + attribute + "?");
-    System.out.print("(");
-    for (String v : values) {
-      System.out.print(v + ",");
-    }
-    System.out.println(")");
+    System.out.println("("+String.join(",", values)+")");
     String observ = sc.nextLine().toLowerCase();
     current = current.children.get(observ);
     makeDecision(new StringTree(current), sc);
@@ -168,19 +153,13 @@ public final class DecisionTreeGenerator {
    * @return entropy of list
    */
   private static float calcEntropy(ArrayList<String> list) {
-    int yes = 0;
-    int no;
-    for (String s : list) {
-      if (s.equals("Yes")) {
-        yes++;
-      }
-    }
-    no = list.size() - yes;
+    int yes = (int) list.stream().filter(s -> s.equals("Yes")).count();
+    int no = list.size() - yes;
+
     float[] arr = {(float) yes / list.size(), (float) no / list.size()};
     float sum = 0f;
-    for (float f : arr) {
-      sum += f == 0 ? 0 : (f * (Math.log10(f) / Math.log10(2)));
-    }
+    sum += arr[0] == 0 ? 0 : (arr[0] * (Math.log10(arr[0]) / Math.log10(2)));
+    sum += arr[1] == 0 ? 0 : (arr[1] * (Math.log10(arr[1]) / Math.log10(2)));
     return sum * (-1f);
   }
 
@@ -196,10 +175,7 @@ public final class DecisionTreeGenerator {
   private static float calcGain(float ynEntropy, List<Integer> partitions,
       List<Integer> probabilities) {
     float diff = 0;
-    int sum = 0;
-    for (int p : partitions) {
-      sum += p;
-    }
+    int sum = partitions.stream().reduce(0, Integer::sum);
     for (int i = 0; i < partitions.size(); i++) {
       int p = partitions.get(i);
       float frac = (float) p / sum;

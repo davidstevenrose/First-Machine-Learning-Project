@@ -3,6 +3,8 @@ package io.github.firstmachinelearningproject;
 /**
  * Holder for a StringNode tree. This wraps the entire decision tree with string data. The tree is
  * instantiated by generating a full decision tree.
+ *
+ * @author drose
  */
 public class StringTree {
 

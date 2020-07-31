@@ -45,6 +45,7 @@ public class Main {
     /*user instructions: write only one of the available attributes in parentheses.
      Input is not case sensitive.
      */
+    sc.close();
   }
 
 }
